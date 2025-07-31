@@ -10,22 +10,40 @@ import auth from '@react-native-firebase/auth';
  */
 export default function HomeScreen({ navigation }) {
   const [expenses, setExpenses] = useState([]);
+  const [familyId, setFamilyId] = useState(null);
 
   useEffect(() => {
-    // Listen to Firestore changes for the current user's expenses. Ordering by
-    // timestamp descending ensures latest expenses appear first.
-    const unsubscribe = firestore()
-      .collection('expenses')
-      .where('userId', '==', auth().currentUser.uid)
-      .orderBy('timestamp', 'desc')
-      .onSnapshot((querySnapshot) => {
-        const list = [];
-        querySnapshot.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        setExpenses(list);
-      });
-    return unsubscribe;
+    let unsubscribeExpenses;
+    // Fetch the familyId for the current user and then subscribe to the family's
+    // expenses.  Using an async function inside useEffect allows us to await
+    // Firestore operations.
+    const fetchFamilyAndListen = async () => {
+      const userId = auth().currentUser?.uid;
+      if (!userId) return;
+      // Read the user's document to determine which family they belong to.
+      const userDoc = await firestore().collection('users').doc(userId).get();
+      const famId = userDoc.data()?.familyId;
+      setFamilyId(famId);
+      if (famId) {
+        unsubscribeExpenses = firestore()
+          .collection('expenses')
+          .where('familyId', '==', famId)
+          .orderBy('timestamp', 'desc')
+          .onSnapshot((querySnapshot) => {
+            const list = [];
+            querySnapshot.forEach((doc) => {
+              list.push({ id: doc.id, ...doc.data() });
+            });
+            setExpenses(list);
+          });
+      }
+    };
+    fetchFamilyAndListen();
+    // Clean up the snapshot listener when the component unmounts or familyId
+    // changes.
+    return () => {
+      if (unsubscribeExpenses) unsubscribeExpenses();
+    };
   }, []);
 
   const handleLogout = () => {
