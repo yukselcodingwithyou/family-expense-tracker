@@ -19,8 +19,14 @@ export default function AddExpenseScreen({ navigation }) {
     }
     try {
       const userId = auth().currentUser.uid;
+      // Retrieve the user's familyId from the users collection to associate
+      // expenses with the entire family rather than a single user.  This allows
+      // all family members to see each other's expenses.
+      const userDoc = await firestore().collection('users').doc(userId).get();
+      const familyId = userDoc.data()?.familyId;
       await firestore().collection('expenses').add({
         userId,
+        familyId,
         amount: parseFloat(amount),
         category: category.trim(),
         description: description.trim(),
