@@ -1,25 +1,21 @@
 {
   "project_info": {
-    "project_number": "YOUR_PROJECT_NUMBER",
-    "project_id": "YOUR_PROJECT_ID"
+    "project_number": "281268728099",
+    "project_id": "family-expense-tracker-db652",
+    "storage_bucket": "family-expense-tracker-db652.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "YOUR_MOBILE_SDK_APP_ID",
+        "mobilesdk_app_id": "1:281268728099:android:b8326f0a65b4f6c4ae5c96",
         "android_client_info": {
-          "package_name": "com.yourcompany.yourapp"
+          "package_name": "com.yukselcoding.expensetracker"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "YOUR_OAUTH_CLIENT_ID",
-          "client_type": 1
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "YOUR_API_KEY"
+          "current_key": "AIzaSyAhS2HAxO-zLp6PHrRIOjR_6zY12WUPqyc"
         }
       ],
       "services": {
